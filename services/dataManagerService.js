@@ -3,13 +3,14 @@ const { Transaction } = require('../models/Transaction');
 const { User } = require('../models/User');
 
 class DataManager {
-    constructor() {
+    constructor(streamer) {
         this.dbPath = `${process.env.APPDATA}\\Gold Tracker\\main.sqlite`;
         this.database = new Sequelize({
             dialect: 'sqlite',
             logging: false,
             storage: this.dbPath
         });
+        this.streamer = streamer;
     }
 
     async checkConnection() {
@@ -39,8 +40,10 @@ class DataManager {
     }
 
     async seedTable() {
-        if (await this.checkUserExists("Castlehead") === false) {
-            await this.user.create({ userName: 'Castlehead' });
+        if (await this.checkUserExists(this.streamer) === false) {
+            await this.user.create({ userName: this.streamer });
+        }
+    }
         }
     }
 }

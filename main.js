@@ -49,9 +49,9 @@ async function initialiseChatListener() {
 }
 
 async function initialiseDataManager() {
-  dataManager = new DataManager();
+  dataManager = new DataManager("castlehead");
 
-  if(await dataManager.checkConnection()){
+  if (await dataManager.checkConnection()) {
     await dataManager.initTables();
     await dataManager.seedTable();
   };
@@ -81,7 +81,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') app.quit()
 })
 
 ipcMain.on('closeApp', (evt, arg) => {
