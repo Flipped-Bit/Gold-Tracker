@@ -11,6 +11,11 @@ input {
 .button-hidden {opacity: 0;}
 .button-hidden:hover {opacity: 1;}
 
+#addGold{
+  background-color: white;
+  height: 25px;
+  width: 75px;
+}
 #closeBtn{
   background-color: red; 
   float: right; 

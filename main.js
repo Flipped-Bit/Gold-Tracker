@@ -5,6 +5,10 @@ const { DataManager } = require('./services/dataManagerService');
 const path = require('path');
 const process = require('process');
 
+const transactionType = {
+  BUY: "buy"
+}
+
 let chatListener, dataManager, mainWindow;
 
 function createWindow() {
@@ -33,14 +37,8 @@ async function initialiseChatListener() {
   await chatListener.connect();
 
   try {
-    chatListener.client.on("cheer", (channel, userstate, message) => {
-      var bits = parseInt(userstate["bits"], 10);
-      if (bits >= 100 && message.toLowerCase().includes("gold")) {
-        console.log(`Enough bits donated by ${userstate['username']} (${bits} bits)`);
-      }
-      else { 
-        console.log(`Not enough bits donated by ${userstate['username']} (${bits} bits)`); 
-      }
+    chatListener.client.on("cheer", async (channel, userstate, message) => {
+      await validateCheer(userstate["bits"], message, userstate["username"]);
     });
     console.log('Chat Listener Event Managers have been setup successfully.');
   } catch (error) {
@@ -49,9 +47,9 @@ async function initialiseChatListener() {
 }
 
 async function initialiseDataManager() {
-  dataManager = new DataManager();
+  dataManager = new DataManager("castlehead");
 
-  if(await dataManager.checkConnection()){
+  if (await dataManager.checkConnection()) {
     await dataManager.initTables();
     await dataManager.seedTable();
   };
@@ -60,6 +58,27 @@ async function initialiseDataManager() {
 async function initialiseServices() {
   await initialiseDataManager();
   await initialiseChatListener();
+}
+
+async function updateBalance(newBalance) {
+  console.log(`Balance is now ${newBalance}`);
+}
+
+async function validateCheer(bits, message, username) {
+  var bits = parseInt(bits, 10);
+  if (bits >= 100 && message.toLowerCase().includes("gold")) {
+    console.log(`Enough bits donated by ${username} (${bits} bits)`);
+    await dataManager.transferGold(1, transactionType.BUY, username)
+      .then(result => {
+        updateBalance(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  else {
+    console.log(`Not enough bits donated by ${username} (${bits} bits)`);
+  }
 }
 
 // This method will be called when Electron has finished
@@ -81,8 +100,12 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin') app.quit()
 })
+
+ipcMain.on('addGold', async (evt, arg) => {
+  await validateCheer(100, "gold", "Flipped_bit");
+});
 
 ipcMain.on('closeApp', (evt, arg) => {
   app.quit();
