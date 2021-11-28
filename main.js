@@ -1,9 +1,10 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { DataManager } = require('./services/dataManagerService');
 const path = require('path');
 const process = require('process');
 
-let mainWindow;
+let dataManager, mainWindow;
 
 function createWindow() {
   // Create the browser window.
@@ -25,17 +26,29 @@ function createWindow() {
   mainWindow.loadFile('index.html')
 }
 
+async function initialiseDataManager() {
+  dataManager = new DataManager();
+
+  await dataManager.checkConnection();
+}
+
+async function initialiseServices() {
+  await initialiseDataManager();
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
 
-    app.on('activate', () => {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
+  initialiseServices();
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
