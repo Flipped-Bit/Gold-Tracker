@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { Transaction } = require('../models/Transaction');
 const { User } = require('../models/User');
 
@@ -44,6 +44,45 @@ class DataManager {
             await this.user.create({ userName: this.streamer });
         }
     }
+
+    async transferGold(amount = 1, transactionType, username) {
+        var streamer, user;
+
+        // Check if User is already in database
+        if (await this.checkUserExists(username) === false) {
+            this.user.create({ balance: 0, userName: username });
+            console.log(`User ${username} added`)
+        }
+
+        user = await this.user.findOne({ where: { userName: username } });
+
+        if (user !== undefined) {
+            streamer = await this.user.findOne({ where: { userName: this.streamer } });
+
+            switch (transactionType) {
+                case "buy":
+                    this.transaction.create({ amount: amount, user: user.userId });
+
+                    await this.user.increment({ balance: amount }, {
+                        where: {
+                            id: {
+                                [Op.or]: [user.id, streamer.id]
+                            }
+                        }
+                    });
+                    break;
+                default:
+                    console.error(`Transaction type ${transactionType} is not currently supported`)
+                    break;
+            }
+
+            // Get updated values
+            streamer = await this.user.findOne({ where: { id: streamer.id } });
+            user = await this.user.findOne({ where: { id: user.id } });
+
+            console.log(`Buyer ${user.userName} balance:${user.balance} and ${streamer.userName} balance:${streamer.balance}`);
+
+            return Number(streamer.balance);
         }
     }
 }
