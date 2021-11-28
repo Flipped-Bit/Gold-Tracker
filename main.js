@@ -61,6 +61,9 @@ async function initialiseServices() {
 }
 
 async function updateBalance(newBalance) {
+  if (newBalance !== undefined) {
+    mainWindow.webContents.send('balanceChanged', newBalance);
+  }
   console.log(`Balance is now ${newBalance}`);
 }
 
@@ -109,4 +112,9 @@ ipcMain.on('addGold', async (evt, arg) => {
 
 ipcMain.on('closeApp', (evt, arg) => {
   app.quit();
+});
+
+ipcMain.on('getBalance', async (evt, arg) => {
+  var amount = await dataManager.getBalance();
+  await updateBalance(amount);
 });

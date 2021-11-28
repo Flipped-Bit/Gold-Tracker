@@ -7,4 +7,5 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById("addGold").addEventListener("click", () => {
     ipcRenderer.send('addGold');
   }); 
+  ipcRenderer.send('getBalance');
 })

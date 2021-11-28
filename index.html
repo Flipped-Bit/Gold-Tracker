@@ -7,6 +7,7 @@
     content="default-src 'self';">
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self';">
+  <script src="./services/UIUpdaterService.js"></script>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -15,6 +16,18 @@
       <input class="button-hidden" id="addGold" type="button" value="Add Gold">
       <input class="button-hidden" id="closeBtn" type="button" value="X">
     </div>
+    <svg height="495" width="940" id="canvas">
+      <g>>
+        <rect x="320" y="150" fill="black" width="300" height="500"></rect>
+        <foreignObject height="250" width="290" x="325" y="200">
+          <div id="aligner" >
+            <div id="spacer"></div>
+            <label id="balance"></label>            
+            <div id="spacer"></div>
+          </div>
+        </foreignObject>
+      </g>
+    </svg>
   </div>
 </body>
 </html>
