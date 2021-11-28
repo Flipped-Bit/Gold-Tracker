@@ -113,3 +113,8 @@ ipcMain.on('addGold', async (evt, arg) => {
 ipcMain.on('closeApp', (evt, arg) => {
   app.quit();
 });
+
+ipcMain.on('getBalance', async (evt, arg) => {
+  var amount = await dataManager.getBalance();
+  await updateBalance(amount);
+});

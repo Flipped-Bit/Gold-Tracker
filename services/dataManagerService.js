@@ -33,6 +33,11 @@ class DataManager {
         return result;
     }
 
+    async getBalance(username = this.streamer){
+        var user = await this.user.findOne({ where: {userName: username}});
+        return Number(user.balance);
+    }
+
     async initTables() {
         this.user = User(this.database);
         this.transaction = Transaction(this.database);
