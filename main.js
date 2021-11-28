@@ -103,6 +103,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
 
+ipcMain.on('addGold', async (evt, arg) => {
+  await validateCheer(100, "gold", "Flipped_bit");
+});
+
 ipcMain.on('closeApp', (evt, arg) => {
   app.quit();
 });
