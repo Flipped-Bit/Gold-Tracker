@@ -20,9 +20,6 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v2
 
-      - name: Find Appsettings file
-        run: Get-ChildItem ${{ env.APP_SETTINGS_PATH }}
-
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
@@ -32,8 +29,11 @@ jobs:
         run: npm install
         
         # Switch appsettings.json to release version
-      - name: Set app.config
+      - name: Set appsettings.json
         run: Set-Content -Path ${{ env.APP_SETTINGS_PATH }} -Value "$env:APP_SETTINGS"
+        
+      - name: Review updated appsettings file
+        run: Get-Content -Path ${{ env.APP_SETTINGS_PATH }}
         
       - name: Build app
         run: npm run dist
