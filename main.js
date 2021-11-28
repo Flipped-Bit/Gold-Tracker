@@ -32,6 +32,20 @@ async function initialiseChatListener() {
 
   await chatListener.connect();
 
+  try {
+    chatListener.client.on("cheer", (channel, userstate, message) => {
+      var bits = parseInt(userstate["bits"], 10);
+      if (bits >= 100 && message.toLowerCase().includes("gold")) {
+        console.log(`Enough bits donated by ${userstate['username']} (${bits} bits)`);
+      }
+      else { 
+        console.log(`Not enough bits donated by ${userstate['username']} (${bits} bits)`); 
+      }
+    });
+    console.log('Chat Listener Event Managers have been setup successfully.');
+  } catch (error) {
+    console.error('Unable to setup the Event Managers:', error);
+  }
 }
 
 async function initialiseDataManager() {
