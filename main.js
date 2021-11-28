@@ -29,7 +29,9 @@ function createWindow() {
 async function initialiseDataManager() {
   dataManager = new DataManager();
 
-  await dataManager.checkConnection();
+  if(await dataManager.checkConnection()){
+    await dataManager.initTables();
+  };
 }
 
 async function initialiseServices() {

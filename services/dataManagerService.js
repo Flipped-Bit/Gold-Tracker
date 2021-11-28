@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const { User } = require('../models/User');
 
 class DataManager {
     constructor() {
@@ -19,6 +20,11 @@ class DataManager {
             console.error('Unable to connect to the database:', error);
             return false;
         }
+    }
+
+    async initTables(){
+        this.user = User(this.database);
+        await this.database.sync();
     }
 }
 
