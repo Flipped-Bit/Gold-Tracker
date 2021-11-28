@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize');
+const { Transaction } = require('../models/Transaction');
 const { User } = require('../models/User');
 
 class DataManager {
@@ -24,6 +25,7 @@ class DataManager {
 
     async initTables(){
         this.user = User(this.database);
+        this.transaction = Transaction(this.database);
         await this.database.sync();
     }
 }
