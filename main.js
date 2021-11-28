@@ -1,10 +1,11 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { ChatListener } = require('./services/chatListenerService');
 const { DataManager } = require('./services/dataManagerService');
 const path = require('path');
 const process = require('process');
 
-let dataManager, mainWindow;
+let chatListener, dataManager, mainWindow;
 
 function createWindow() {
   // Create the browser window.
@@ -26,6 +27,27 @@ function createWindow() {
   mainWindow.loadFile('index.html')
 }
 
+async function initialiseChatListener() {
+  chatListener = new ChatListener('castlehead');
+
+  await chatListener.connect();
+
+  try {
+    chatListener.client.on("cheer", (channel, userstate, message) => {
+      var bits = parseInt(userstate["bits"], 10);
+      if (bits >= 100 && message.toLowerCase().includes("gold")) {
+        console.log(`Enough bits donated by ${userstate['username']} (${bits} bits)`);
+      }
+      else { 
+        console.log(`Not enough bits donated by ${userstate['username']} (${bits} bits)`); 
+      }
+    });
+    console.log('Chat Listener Event Managers have been setup successfully.');
+  } catch (error) {
+    console.error('Unable to setup the Event Managers:', error);
+  }
+}
+
 async function initialiseDataManager() {
   dataManager = new DataManager();
 
@@ -37,6 +59,7 @@ async function initialiseDataManager() {
 
 async function initialiseServices() {
   await initialiseDataManager();
+  await initialiseChatListener();
 }
 
 // This method will be called when Electron has finished
