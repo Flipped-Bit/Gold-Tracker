@@ -1,0 +1,31 @@
+{
+  "name": "gold-tracker",
+  "productName": "Gold Tracker",
+  "version": "1.0.0",
+  "description": "Application for tracking a currency system based around gold.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flipped-Bit/Gold-Tracker.git"
+  },
+  "author": "Flipped_Bit",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/Flipped-Bit/Gold-Tracker/issues"
+  },
+  "homepage": "https://github.com/Flipped-Bit/Gold-Tracker#readme",
+  "devDependencies": {
+    "electron": "^14.2.1",
+    "electron-builder": "^22.14.5"
+  }
+}
