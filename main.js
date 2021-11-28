@@ -31,6 +31,7 @@ async function initialiseDataManager() {
 
   if(await dataManager.checkConnection()){
     await dataManager.initTables();
+    await dataManager.seedTable();
   };
 }
 

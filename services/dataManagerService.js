@@ -23,10 +23,25 @@ class DataManager {
         }
     }
 
-    async initTables(){
+    async checkUserExists(username) {
+        let result = false
+        await this.user.count({ where: { username: username } })
+            .then(count => {
+                result = (count > 0) ? true : false
+            });
+        return result;
+    }
+
+    async initTables() {
         this.user = User(this.database);
         this.transaction = Transaction(this.database);
         await this.database.sync();
+    }
+
+    async seedTable() {
+        if (await this.checkUserExists("Castlehead") === false) {
+            await this.user.create({ userName: 'Castlehead' });
+        }
     }
 }
 
