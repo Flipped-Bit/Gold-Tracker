@@ -1,0 +1,50 @@
+name: Gold Tracker release
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    tags:
+      - "v*"
+      
+env:
+  APP_SETTINGS_PATH: ./appsettings.json
+  APP_SETTINGS: ${{ secrets.APP_SETTINGS }}
+      
+jobs:
+  test:
+    name: Test
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Install test app dependencies
+        run: npm install
+        
+        # Switch appsettings.json to release version
+      - name: Set app.config
+        run: Set-Content -Path ${{ env.APP_SETTINGS_PATH }} -Value "$env:APP_SETTINGS"
+        
+      - name: Build app
+        run: npm run dist
+
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Gold-Tracker ${{ github.ref }}
+
+      - uses: csexton/release-asset-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: dist/*.exe
+          release-url: ${{ steps.create_release.outputs.upload_url }}
