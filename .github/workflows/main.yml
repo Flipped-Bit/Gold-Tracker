@@ -8,7 +8,7 @@ on:
       - "v*"
       
 env:
-  APP_SETTINGS_PATH: ./appsettings.json
+  APP_SETTINGS_PATH: appsettings.json
   APP_SETTINGS: ${{ secrets.APP_SETTINGS }}
       
 jobs:
@@ -27,8 +27,6 @@ jobs:
 
       - name: Install test app dependencies
         run: npm install
-        
-      - run: Get-ChildItem -Recurse
         
         # Switch appsettings.json to release version
       - name: Set app.config
