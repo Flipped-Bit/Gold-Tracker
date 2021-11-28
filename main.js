@@ -61,6 +61,9 @@ async function initialiseServices() {
 }
 
 async function updateBalance(newBalance) {
+  if (newBalance !== undefined) {
+    mainWindow.webContents.send('balanceChanged', newBalance);
+  }
   console.log(`Balance is now ${newBalance}`);
 }
 
