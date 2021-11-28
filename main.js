@@ -1,10 +1,11 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { ChatListener } = require('./services/chatListenerService');
 const { DataManager } = require('./services/dataManagerService');
 const path = require('path');
 const process = require('process');
 
-let dataManager, mainWindow;
+let chatListener, dataManager, mainWindow;
 
 function createWindow() {
   // Create the browser window.
@@ -26,6 +27,13 @@ function createWindow() {
   mainWindow.loadFile('index.html')
 }
 
+async function initialiseChatListener() {
+  chatListener = new ChatListener('castlehead');
+
+  await chatListener.connect();
+
+}
+
 async function initialiseDataManager() {
   dataManager = new DataManager();
 
@@ -37,6 +45,7 @@ async function initialiseDataManager() {
 
 async function initialiseServices() {
   await initialiseDataManager();
+  await initialiseChatListener();
 }
 
 // This method will be called when Electron has finished
