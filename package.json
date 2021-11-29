@@ -13,7 +13,9 @@
       "allowToChangeInstallationDirectory": true,
       "oneClick": false
     },
-    "asar": false
+    "asarUnpack": [
+      "resources/*"
+    ]
   },
   "repository": {
     "type": "git",
