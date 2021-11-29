@@ -12,7 +12,10 @@
     "nsis": {
       "allowToChangeInstallationDirectory": true,
       "oneClick": false
-    }
+    },
+    "files": [
+      "build\\Coin_Sound.mp3"
+    ]
   },
   "repository": {
     "type": "git",
