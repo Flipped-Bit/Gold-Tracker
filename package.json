@@ -13,9 +13,7 @@
       "allowToChangeInstallationDirectory": true,
       "oneClick": false
     },
-    "files": [
-      "build\\Coin_Sound.mp3"
-    ]
+    "asar": false
   },
   "repository": {
     "type": "git",
